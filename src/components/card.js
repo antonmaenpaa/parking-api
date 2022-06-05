@@ -10,20 +10,22 @@ function Card({
     type,
     isAvalable,
     charging,
-    disabled }) {
+    disabled,
+    price }) {
     const classes = useStyles();
     return(
         <div className={`${classes.card} ${isAvalable ? classes.bgGreen : classes.bgRed}`  }>
+            <span className={classes.price}>Price {price}sek/h</span>
             <div className={classes.cardContent}>   
                 <div className={classes.floorSpot}>
                     <p className={classes.pStyle}>Floor {floor}</p>
                     <p className={classes.pStyle}>Spot {number}</p>
                 </div>
                 <div className={classes.logos}>
-                    {disabled ?  <AccessibleIcon sx={{ fontSize: 30 }} />  : <span className={classes.span}></span>}
-                    {charging ?  <EvStationIcon sx={{ fontSize: 30 }} />  : <span className={classes.span}></span>}
-                    {type === 'car' && <DirectionsCarIcon sx={{ fontSize: 30 }} />}
-                    {type === 'mc' && <TwoWheelerIcon sx={{ fontSize: 30 }} />}
+                    {disabled ?  <AccessibleIcon sx={{ fontSize: 25 }} />  : <span className={classes.span}></span>}
+                    {charging ?  <EvStationIcon sx={{ fontSize: 25 }} />  : <span className={classes.span}></span>}
+                    {type === 'car' && <DirectionsCarIcon sx={{ fontSize: 25 }} />}
+                    {type === 'mc' && <TwoWheelerIcon sx={{ fontSize: 25 }} />}
 
                 </div>
             </div>
@@ -41,6 +43,14 @@ const useStyles = makeStyles((theme) => ({
         width: '9rem',
         height: '5rem',
         borderRadius: '10px',
+        position: 'relative',
+    },
+    price : {
+        position: 'absolute',
+        right: '2.9rem',
+        fontSize: '.5rem',
+        bottom: '.1rem',
+
     },
     bgGreen: {
         backgroundColor: '#bedebf',
