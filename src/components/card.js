@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         right: '2.9rem',
         fontSize: '.5rem',
-        bottom: '.1rem',
+        bottom: '.25rem',
 
     },
     bgGreen: {
