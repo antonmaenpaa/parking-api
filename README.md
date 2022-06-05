@@ -2,7 +2,7 @@
 
 ## Run these commands when cloning this project
 
-Install all node dependencies, from root use:
+Install all dependencies, from root use:
 
 ### `npm install`
 
