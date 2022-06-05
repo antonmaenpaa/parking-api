@@ -1,51 +1,46 @@
 import { useState, useEffect } from 'react';
 import Card from './components/card';
 import { Container, makeStyles } from '@material-ui/core';
-import './App.css';
 import useParkingSpots from './hooks/useParkingSpots';
 
 function App() {
   const classes = useStyles();
-  const [age, setAge] = useState('');
   const { parkingSpots } = useParkingSpots();
   const [pfloor , setPfloor] = useState('');
+  const [ptype , setPtype] = useState('');
+  const [vechile, setVechile] = useState('');
 
   useEffect(() => {
     if(!parkingSpots) return;
-    console.log(parkingSpots.parking_spots);
-  }, [parkingSpots, pfloor]);
-
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
-
-
+  }, [parkingSpots]);
 
   return (
     <Container className={classes.conatiner}>
       <h1>Parking overview</h1>
-        <div className={classes.selectContainer}>
+      <div className={classes.selectContainer}>
         <h5 className={classes.h5}>Sort</h5>
-          <select className={classes.select} value={pfloor} onChange={(e) => setPfloor(e.currentTarget.value)  }>
-            <option value="">Floor</option>
-            {parkingSpots && parkingSpots.map((floor, index) => (
-              <option key={index} value={floor.floor}>
-                {floor.floor}
-              </option>
-            ))}
-          </select>
-          <select className={classes.select} value={age} onChange={handleChange}>
-            <option value="">Type</option>
-            <option value="1">All</option>
-            <option value="1">Charging</option>
-            <option value="2">Disabled</option>
-          </select>
-          <select className={classes.select} value={age} onChange={handleChange}>
-            <option value="">Vechile</option>
-            <option value="1">Car</option>
-            <option value="2">MC</option>
-          </select>
-        </div>
+        <select className={classes.select} value={pfloor} onChange={(e) => setPfloor(e.currentTarget.value)  }>
+          <option value="">Floor</option>
+          <option value="">All</option>
+          {parkingSpots && parkingSpots.map((floor, index) => (
+            <option key={index} value={floor.floor}>
+              {floor.floor}
+            </option>
+          ))}
+        </select>
+        <select className={classes.select} value={vechile} onChange={(e) => setVechile(e.currentTarget.value)}>
+          <option value="">Vechile</option>
+          <option value="">All</option>
+          <option value="car">Car</option>
+          <option value="mc">MC</option>
+        </select>
+        <select className={classes.select} value={ptype} onChange={(e) => setPtype(e.currentTarget.value)}>
+          <option value="">Type</option>
+          <option value="">All</option>
+          <option value="charging">Charging</option>
+          <option value="disabled">Disabled</option>
+        </select>
+      </div>
       <div className={classes.availableInfo}>
         <div className={classes.flexContainer}>
           <div className={`${classes.miniCard} ${classes.colorGreen}`}></div>
@@ -57,43 +52,38 @@ function App() {
         </div>
       </div>
       <div className={classes.cardContainer}>
-              {parkingSpots && parkingSpots.map((item, index) => (
-                item.parking_spots.map((spot, index) => (
+        {parkingSpots && parkingSpots?.filter((floor) => 
+          pfloor ? 
+          floor.floor === Number(pfloor) : true
+        ).map((item) => (
+          item.parking_spots
+            .filter(
+              (spot) =>
+                vechile && ptype ?
+                spot.type === vechile && spot.is_charging_station && ptype === 'charging' ||
+                spot.type === vechile && spot.is_disabled_parking && ptype === 'disabled' :
+                vechile || ptype ? 
+                spot.type === vechile ||
+                spot.is_charging_station && ptype === 'charging' ||
+                spot.is_disabled_parking && ptype === 'disabled' 
 
-                <Card 
-                  key={index} 
-                  floor={item.floor}
-                  number={spot.number} 
-                  type={spot.type} 
-                  isAvalable={spot.is_available} 
-                  charging={spot.is_charging_station} 
-                  disabled={spot.is_disabled_parking}
-                />
-                ))
-              ))}
-                
-
-      {/* // {data
-  //   .filter(({ birthdate, first_name, last_name }) =>
-  //     selectMonthFilter || nameFilter
-  //       ? getMonthValue(birthdate) === selectMonthFilter ||
-  //         first_name
-  //           .concat(last_name)
-  //           .toLowerCase()
-  //           .includes(nameFilter.toLowerCase())
-  //       : true
-  //   )
-  //   .map((el) => (
-  //     <li key={el.id}>{JSON.stringify(el)}</li>
-  //   ))} */}
-
+                : true
+            ).map((spot, index) => (
+              <Card 
+                key={index} 
+                floor={item.floor}
+                number={spot.number} 
+                type={spot.type} 
+                isAvalable={spot.is_available} 
+                charging={spot.is_charging_station} 
+                disabled={spot.is_disabled_parking}
+              />
+              ))
+          ))}        
       </div>
-
     </Container>
   );
 }
-
-// #ffa1a1 Röd
 
 const useStyles = makeStyles((theme) => ({
   conatiner: {
@@ -115,6 +105,7 @@ const useStyles = makeStyles((theme) => ({
       position: 'sticky',
       top: 0,
       background: 'white',
+      padding: '2rem 0'
     },
   },
   filterContainer: {
@@ -136,9 +127,11 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('xs')]: {
       width: '100%',
       padding: '0rem',
-
     },
-
+  },
+  checkboxes: {
+    display: 'flex',
+    flexDirection: 'column',
   },
 
   availableInfo: {
